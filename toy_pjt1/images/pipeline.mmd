@@ -1,0 +1,32 @@
+flowchart TD
+    subgraph IDX["인덱싱 단계 (오프라인, 1회)"]
+        direction TB
+        PDF[/"PDF 보고서<br/>data/진화하는 금융사기...pdf"/]
+        LOAD["PyPDFLoader<br/>(4. pages: 페이지 단위 Document 15개)"]
+        SPLIT["RecursiveCharacterTextSplitter<br/>chunk_size=800, overlap=120<br/>(5. chunks: 27개)"]
+        META["메타데이터 보강<br/>page_label, chunk_id, source_name"]
+        CHECK{"7. 저장된 인덱스<br/>index.faiss / index.pkl<br/>존재?"}
+        BUILD["FAISS.from_documents<br/>임베딩: text-embedding-3-small"]
+        SAVE[("faiss_financial_fraud_pdf_index/<br/>save_local")]
+        LOADIDX["FAISS.load_local"]
+        VS[("vectorstore<br/>FAISS L2 인덱스")]
+
+        PDF --> LOAD --> SPLIT --> META --> CHECK
+        CHECK -- "없음" --> BUILD --> SAVE --> VS
+        CHECK -- "있음" --> LOADIDX --> VS
+    end
+
+    subgraph QA["질의응답 단계 (온라인, 질문마다)"]
+        direction TB
+        Q[/"사용자 질문 question"/]
+        RET["8~9. 유사도 검색 Top-k=4<br/>similarity_search"]
+        FMT["format_docs<br/>[출처: page, chunk] + 본문"]
+        PROMPT["ChatPromptTemplate<br/>system: 문서 근거만, 모르면 모른다고, 근거 페이지 표시<br/>human: question"]
+        LLM["llm_connect gpt-5.4-mini<br/>temperature=0"]
+        PARSE["StrOutputParser"]
+        ANS[/"answer + sources 표<br/>(11. answer_question)"/]
+
+        Q --> RET --> FMT --> PROMPT --> LLM --> PARSE --> ANS
+    end
+
+    VS -. "질문 임베딩 후 벡터 검색" .-> RET

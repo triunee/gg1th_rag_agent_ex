@@ -216,3 +216,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# 환경변수 변형 (예시 파일은 허용)
+.env.*
+!.env.example
+
+# RAG 산출물 (노트북 실행 시 재생성)
+**/faiss_index/
+**/faiss_*_index/
+2.naive_rag/data/sample.csv
+
+# 외부 원본 문서 (저작권 - 각자 내려받아 사용)
+toy_pjt1/data/*.pdf
