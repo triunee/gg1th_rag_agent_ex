@@ -1,4 +1,4 @@
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 import os
 from dotenv import load_dotenv
 
@@ -21,4 +21,15 @@ def llm_connect(
         temperature=temperature,
         use_responses_api=False,  # base url로 할 때는 이부분 넣어야 함.(MonoRouter 사용)
         max_tokens=max_tokens,
+    )
+
+
+def embedding_connect(
+    model: str = "text-embedding-3-small",
+    api_key: str = api_key,
+):
+    return OpenAIEmbeddings(
+        model=model,
+        api_key=api_key,
+        base_url=BASE_URL,  # MonoRouter 사용
     )
