@@ -225,6 +225,9 @@ __marimo__/
 **/faiss_index/
 **/faiss_*_index/
 2.naive_rag/data/sample.csv
+**/chroma_db/
+3.advanced_rag_ai_trend/data/*_docling.md
 
 # 외부 원본 문서 (저작권 - 각자 내려받아 사용)
 toy_pjt1/data/*.pdf
+3.advanced_rag_ai_trend/data/*.pdf
